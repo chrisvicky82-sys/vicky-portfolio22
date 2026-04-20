@@ -25,7 +25,7 @@ const clientWork = [
 const podcastReels = [
   { targetUrl: "https://www.instagram.com/reel/DOGW5qpgfDI/", videoUrl: "/reels/DOGW5qpgfDI.mp4", title: "Podcast Reel 1" },
   { targetUrl: "https://www.instagram.com/reel/DUvK1QQkncV/", videoUrl: "/reels/DUvK1QQkncV.mp4", title: "Podcast Reel 2" },
-  { targetUrl: "https://www.instagram.com/reel/DPoI8bUAZ6r/", videoUrl: "/reels/DPoI8bUAZ6r.mp4", title: "Podcast Reel 3" },
+  { targetUrl: "https://youtube.com/shorts/5IDNjfzogoM", videoUrl: "https://www.youtube.com/embed/5IDNjfzogoM", title: "Podcast Reel 3", isYoutube: true, ytid: "5IDNjfzogoM" },
   { targetUrl: "https://www.instagram.com/reel/DWWKSi5AZtr/", videoUrl: "/reels/DWWKSi5AZtr.mp4", title: "Podcast Reel 4" },
   { targetUrl: "https://www.instagram.com/reel/DJ4B0gHJIJX/", videoUrl: "/reels/DJ4B0gHJIJX.mp4", title: "Podcast Reel 5" }
 ];
@@ -94,9 +94,11 @@ export default function Projects() {
             {adCreatives.map((ad, idx) => (
               <motion.div
                 key={idx} variants={cardVariant} onClick={() => setActiveVideo({ src: ad.videoUrl, title: ad.title })}
+                onMouseEnter={(e: any) => e.currentTarget.querySelector('video')?.play()}
+                onMouseLeave={(e: any) => e.currentTarget.querySelector('video')?.pause()}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
-                <video src={ad.videoUrl} autoPlay muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
+                <video src={ad.videoUrl} muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
                 <div className="absolute top-6 right-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 p-4 bg-black/40 border border-white/10 rounded-full backdrop-blur-md">
                    <Play className="text-white w-5 h-5 fill-white" />
@@ -128,9 +130,11 @@ export default function Projects() {
             {clientWork.map((work, idx) => (
               <motion.a
                 key={idx} href={work.targetUrl} target="_blank" rel="noopener noreferrer" variants={cardVariant}
+                onMouseEnter={(e: any) => e.currentTarget.querySelector('video')?.play()}
+                onMouseLeave={(e: any) => e.currentTarget.querySelector('video')?.pause()}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
-                <video src={work.videoUrl} autoPlay muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
+                <video src={work.videoUrl} muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
                 <div className="absolute bottom-0 left-0 p-6 lg:p-5 xl:p-6 opacity-80 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 w-full pointer-events-none">
                   <h3 className="text-xl md:text-xl lg:text-lg xl:text-xl font-bold text-white drop-shadow-md leading-tight">{work.title}</h3>
@@ -159,9 +163,15 @@ export default function Projects() {
             {podcastReels.map((reel, idx) => (
               <motion.a
                 key={idx} href={reel.targetUrl} target="_blank" rel="noopener noreferrer" variants={cardVariant}
+                onMouseEnter={(e: any) => e.currentTarget.querySelector('video')?.play()}
+                onMouseLeave={(e: any) => e.currentTarget.querySelector('video')?.pause()}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
-                <video src={reel.videoUrl} autoPlay muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
+                {reel.isYoutube ? (
+                  <iframe src={`${reel.videoUrl}?autoplay=1&mute=1&loop=1&playlist=${reel.ytid}&controls=0&showinfo=0&rel=0&modestbranding=1`} className="absolute inset-0 w-[140%] h-[140%] -top-[20%] -left-[20%] object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none opacity-80" allow="autoplay; encrypted-media" frameBorder="0" tabIndex={-1} />
+                ) : (
+                  <video src={reel.videoUrl} muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
                 <div className="absolute bottom-0 left-0 p-6 lg:p-5 xl:p-6 opacity-80 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 w-full pointer-events-none">
                   <h3 className="text-xl md:text-xl lg:text-lg xl:text-xl font-bold text-white drop-shadow-md leading-tight">{reel.title}</h3>
