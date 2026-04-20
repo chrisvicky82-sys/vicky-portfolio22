@@ -133,11 +133,14 @@ export default function ScrollyCanvas() {
         />
 
         {!imagesLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#121212] z-[100]">
-            <p className="text-white/50 text-sm uppercase tracking-widest animate-pulse">
-              Buffering Experience...
-            </p>
-          </div>
+          <img 
+            src="/sequence/frame_00_delay-0.066s.jpg" 
+            alt="Placeholder"
+            className="absolute inset-0 w-full h-full object-cover z-0" 
+            style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
+            // @ts-ignore
+            fetchpriority="high"
+          />
         )}
       </div>
     </div>
