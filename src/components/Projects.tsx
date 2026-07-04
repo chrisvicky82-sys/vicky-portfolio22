@@ -17,7 +17,7 @@ interface ProjectItem {
 
 const adCreatives: ProjectItem[] = [
   { videoUrl: "/reels/AdCreative1.mp4", poster: "/reels/thumbnails/AdCreative1.jpg", title: "Ad Creative 1" },
-  { videoUrl: "https://drive.google.com/file/d/1Cdg_xbLsT0QpY3I3IvQFQVO_3sD3al2Q/preview", title: "Ad Creative 2", isDrive: true, driveId: "1Cdg_xbLsT0QpY3I3IvQFQVO_3sD3al2Q" },
+  { videoUrl: "https://www.youtube.com/embed/krG9QQ9hydc", poster: "/reels/thumbnails/AdCreative2.jpg", title: "Ad Creative 2", isYoutube: true, ytid: "krG9QQ9hydc" },
   { videoUrl: "/reels/AdCreative3.mp4", poster: "/reels/thumbnails/AdCreative3.jpg", title: "Ad Creative 3" },
   { videoUrl: "/reels/AdCreative4.mp4", poster: "/reels/thumbnails/AdCreative4.jpg", title: "Ad Creative 4" },
   { videoUrl: "/reels/AdCreative5.mp4", poster: "/reels/thumbnails/AdCreative5.jpg", title: "Ad Creative 5" }
@@ -157,10 +157,10 @@ export default function Projects() {
           >
             {adCreatives.map((ad, idx) => (
               <motion.div
-                key={idx} variants={cardVariant} onClick={() => !ad.isDrive && setActiveVideo({ src: ad.videoUrl, title: ad.title })}
+                key={idx} variants={cardVariant} onClick={() => setActiveVideo({ src: ad.videoUrl, title: ad.title })}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
-                <LazyVideo src={ad.videoUrl} poster={ad.poster} isDrive={ad.isDrive} isMobile={isMobile} />
+                <LazyVideo src={ad.videoUrl} poster={ad.poster} isYoutube={ad.isYoutube} ytid={ad.ytid} isMobile={isMobile} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
                 <div className="absolute top-6 right-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 p-4 bg-black/40 border border-white/10 rounded-full backdrop-blur-md">
                    <Play className="text-white w-5 h-5 fill-white" />
