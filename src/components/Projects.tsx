@@ -1,40 +1,104 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Play, X, MessageCircle } from 'lucide-react';
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants, useInView } from 'framer-motion';
 
-// --- DATA ARRAYS ---
+interface ProjectItem {
+  targetUrl?: string;
+  videoUrl: string;
+  poster?: string;
+  title: string;
+  isYoutube?: boolean;
+  ytid?: string;
+  isDrive?: boolean;
+  driveId?: string;
+}
 
-const adCreatives = [
-  { videoUrl: "/reels/AdCreative1.mp4", title: "Ad Creative 1" },
-  { videoUrl: "/reels/AdCreative2.mp4", title: "Ad Creative 2" },
-  { videoUrl: "/reels/AdCreative3.mp4", title: "Ad Creative 3" },
-  { videoUrl: "/reels/AdCreative4.mp4", title: "Ad Creative 4" },
-  { videoUrl: "/reels/AdCreative5.mp4", title: "Ad Creative 5" }
+const adCreatives: ProjectItem[] = [
+  { videoUrl: "/reels/AdCreative1.mp4", poster: "/reels/thumbnails/AdCreative1.jpg", title: "Ad Creative 1" },
+  { videoUrl: "https://drive.google.com/file/d/1Cdg_xbLsT0QpY3I3IvQFQVO_3sD3al2Q/preview", title: "Ad Creative 2", isDrive: true, driveId: "1Cdg_xbLsT0QpY3I3IvQFQVO_3sD3al2Q" },
+  { videoUrl: "/reels/AdCreative3.mp4", poster: "/reels/thumbnails/AdCreative3.jpg", title: "Ad Creative 3" },
+  { videoUrl: "/reels/AdCreative4.mp4", poster: "/reels/thumbnails/AdCreative4.jpg", title: "Ad Creative 4" },
+  { videoUrl: "/reels/AdCreative5.mp4", poster: "/reels/thumbnails/AdCreative5.jpg", title: "Ad Creative 5" }
 ];
 
-const clientWork = [
-  { targetUrl: "https://www.instagram.com/reel/DRjvgCoD4S6/", videoUrl: "/reels/ClientProject1.mp4", title: "Client Project 1" },
-  { targetUrl: "https://www.instagram.com/reel/DQwMiAVEiMR/", videoUrl: "/reels/ClientProject2.mp4", title: "Client Project 2" },
-  { targetUrl: "https://www.instagram.com/reel/DITm6V6ipev/", videoUrl: "/reels/ClientProject3.mp4", title: "Client Project 3" },
-  { targetUrl: "https://www.instagram.com/reel/DSKi_cbEtbK/", videoUrl: "/reels/ClientProject4.mp4", title: "Client Project 4" },
-  { targetUrl: "https://www.instagram.com/reel/DR12-2tk8jG/", videoUrl: "/reels/ClientProject5.mp4", title: "Client Project 5" }
+const clientWork: ProjectItem[] = [
+  { targetUrl: "https://www.instagram.com/reel/DRjvgCoD4S6/", videoUrl: "/reels/ClientProject1.mp4", poster: "/reels/thumbnails/ClientProject1.jpg", title: "Client Project 1" },
+  { targetUrl: "https://www.instagram.com/reel/DQwMiAVEiMR/", videoUrl: "/reels/ClientProject2.mp4", poster: "/reels/thumbnails/ClientProject2.jpg", title: "Client Project 2" },
+  { targetUrl: "https://www.instagram.com/reel/DITm6V6ipev/", videoUrl: "/reels/ClientProject3.mp4", poster: "/reels/thumbnails/ClientProject3.jpg", title: "Client Project 3" },
+  { targetUrl: "https://www.instagram.com/reel/DSKi_cbEtbK/", videoUrl: "/reels/ClientProject4.mp4", poster: "/reels/thumbnails/ClientProject4.jpg", title: "Client Project 4" },
+  { targetUrl: "https://www.instagram.com/reel/DR12-2tk8jG/", videoUrl: "/reels/ClientProject5.mp4", poster: "/reels/thumbnails/ClientProject5.jpg", title: "Client Project 5" },
+  { targetUrl: "https://youtube.com/shorts/-X1fttKBTiY", videoUrl: "https://www.youtube.com/embed/-X1fttKBTiY", poster: "/reels/thumbnails/ClientProject6.jpg", title: "Client Project 6", isYoutube: true, ytid: "-X1fttKBTiY" }
 ];
 
-const podcastReels = [
-  { targetUrl: "https://www.instagram.com/reel/DOGW5qpgfDI/", videoUrl: "/reels/DOGW5qpgfDI.mp4", title: "Podcast Reel 1" },
-  { targetUrl: "https://www.instagram.com/reel/DUvK1QQkncV/", videoUrl: "/reels/DUvK1QQkncV.mp4", title: "Podcast Reel 2" },
-  { targetUrl: "https://youtube.com/shorts/5IDNjfzogoM", videoUrl: "https://www.youtube.com/embed/5IDNjfzogoM", title: "Podcast Reel 3", isYoutube: true, ytid: "5IDNjfzogoM" },
-  { targetUrl: "https://www.instagram.com/reel/DWWKSi5AZtr/", videoUrl: "/reels/DWWKSi5AZtr.mp4", title: "Podcast Reel 4" },
-  { targetUrl: "https://www.instagram.com/reel/DJ4B0gHJIJX/", videoUrl: "/reels/DJ4B0gHJIJX.mp4", title: "Podcast Reel 5" }
+const podcastReels: ProjectItem[] = [
+  { targetUrl: "https://www.instagram.com/reel/DOGW5qpgfDI/", videoUrl: "/reels/DOGW5qpgfDI.mp4", poster: "/reels/thumbnails/DOGW5qpgfDI.jpg", title: "Podcast Reel 1" },
+  { targetUrl: "https://www.instagram.com/reel/DUvK1QQkncV/", videoUrl: "/reels/DUvK1QQkncV.mp4", poster: "/reels/thumbnails/DUvK1QQkncV.jpg", title: "Podcast Reel 2" },
+  { targetUrl: "https://youtube.com/shorts/5IDNjfzogoM", videoUrl: "https://www.youtube.com/embed/5IDNjfzogoM", poster: "/reels/thumbnails/5IDNjfzogoM.jpg", title: "Podcast Reel 3", isYoutube: true, ytid: "5IDNjfzogoM" },
+  { targetUrl: "https://www.instagram.com/reel/DWWKSi5AZtr/", videoUrl: "/reels/DWWKSi5AZtr.mp4", poster: "/reels/thumbnails/DWWKSi5AZtr.jpg", title: "Podcast Reel 4" },
+  { targetUrl: "https://www.instagram.com/reel/DJ4B0gHJIJX/", videoUrl: "/reels/DJ4B0gHJIJX.mp4", poster: "/reels/thumbnails/DJ4B0gHJIJX.jpg", title: "Podcast Reel 5" }
 ];
 
-const youtubeEdits = [
-  { videoUrl: "https://www.youtube.com/embed/nGV715T0Jos", title: "YouTube Podcast 1", ytid: "nGV715T0Jos" },
-  { videoUrl: "https://www.youtube.com/embed/DlgBadG_msg", title: "YouTube Podcast 2", ytid: "DlgBadG_msg" },
-  { videoUrl: "https://www.youtube.com/embed/OP4VtEeu6t8", title: "YouTube Podcast 3", ytid: "OP4VtEeu6t8" }
+const youtubeEdits: ProjectItem[] = [
+  { videoUrl: "https://www.youtube.com/embed/nGV715T0Jos", poster: "/reels/thumbnails/nGV715T0Jos.jpg", title: "YouTube Podcast 1", ytid: "nGV715T0Jos" },
+  { videoUrl: "https://www.youtube.com/embed/DlgBadG_msg", poster: "/reels/thumbnails/DlgBadG_msg.jpg", title: "YouTube Podcast 2", ytid: "DlgBadG_msg" },
+  { videoUrl: "https://www.youtube.com/embed/OP4VtEeu6t8", poster: "/reels/thumbnails/OP4VtEeu6t8.jpg", title: "YouTube Podcast 3", ytid: "OP4VtEeu6t8" }
 ];
+
+const LazyVideo = ({ src, poster, isYoutube = false, ytid = "", isDrive = false, isMobile = false }: { src: string, poster?: string, isYoutube?: boolean, ytid?: string, isDrive?: boolean, isMobile?: boolean }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { margin: "200px" });
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Play when in view, pause when out of view
+  useEffect(() => {
+    if (isYoutube || isDrive) return;
+
+    if (isInView && videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // Fallback gracefully if browser blocks autoplay
+      });
+    } else if (!isInView && videoRef.current) {
+      videoRef.current.pause();
+    }
+  }, [isInView, isYoutube, isDrive]);
+
+  return (
+    <div ref={ref} className="absolute inset-0 w-full h-full pointer-events-none bg-[#1e1e1e]">
+      {!isInView ? (
+        poster && <img src={poster} alt="Thumbnail" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+      ) : (
+        <>
+          {/* Always render poster behind video for instant preview */}
+          {poster && <img src={poster} alt="Thumbnail" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />}
+          
+          {isYoutube ? (
+            <iframe 
+              src={`${src}?autoplay=1&mute=1&loop=1&playlist=${ytid}&controls=0&showinfo=0&rel=0&modestbranding=1`} 
+              className="absolute inset-0 w-[140%] h-[140%] -top-[20%] -left-[20%] object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] opacity-80" 
+              allow="autoplay; encrypted-media" frameBorder="0" tabIndex={-1} loading="lazy" 
+            />
+          ) : isDrive ? (
+            <iframe
+              src={src}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
+              allow="autoplay" frameBorder="0" tabIndex={-1} loading="lazy"
+            />
+          ) : (
+            <video 
+              ref={videoRef}
+              src={src} 
+              poster={poster}
+              autoPlay muted loop playsInline preload="metadata" 
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]" 
+            />
+          )}
+        </>
+      )}
+    </div>
+  );
+};
 
 export default function Projects() {
   const [activeVideo, setActiveVideo] = useState<{ src: string; title: string } | null>(null);
@@ -93,12 +157,10 @@ export default function Projects() {
           >
             {adCreatives.map((ad, idx) => (
               <motion.div
-                key={idx} variants={cardVariant} onClick={() => setActiveVideo({ src: ad.videoUrl, title: ad.title })}
-                onMouseEnter={(e: any) => e.currentTarget.querySelector('video')?.play()}
-                onMouseLeave={(e: any) => e.currentTarget.querySelector('video')?.pause()}
+                key={idx} variants={cardVariant} onClick={() => !ad.isDrive && setActiveVideo({ src: ad.videoUrl, title: ad.title })}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
-                <video src={ad.videoUrl} muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
+                <LazyVideo src={ad.videoUrl} poster={ad.poster} isDrive={ad.isDrive} isMobile={isMobile} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
                 <div className="absolute top-6 right-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 p-4 bg-black/40 border border-white/10 rounded-full backdrop-blur-md">
                    <Play className="text-white w-5 h-5 fill-white" />
@@ -125,16 +187,14 @@ export default function Projects() {
           
           <motion.div 
             initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-8"
           >
             {clientWork.map((work, idx) => (
               <motion.a
                 key={idx} href={work.targetUrl} target="_blank" rel="noopener noreferrer" variants={cardVariant}
-                onMouseEnter={(e: any) => e.currentTarget.querySelector('video')?.play()}
-                onMouseLeave={(e: any) => e.currentTarget.querySelector('video')?.pause()}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
-                <video src={work.videoUrl} muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
+                <LazyVideo src={work.videoUrl} poster={work.poster} isYoutube={work.isYoutube} ytid={work.ytid} isMobile={isMobile} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
                 <div className="absolute bottom-0 left-0 p-6 lg:p-5 xl:p-6 opacity-80 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 w-full pointer-events-none">
                   <h3 className="text-xl md:text-xl lg:text-lg xl:text-xl font-bold text-white drop-shadow-md leading-tight">{work.title}</h3>
@@ -163,15 +223,9 @@ export default function Projects() {
             {podcastReels.map((reel, idx) => (
               <motion.a
                 key={idx} href={reel.targetUrl} target="_blank" rel="noopener noreferrer" variants={cardVariant}
-                onMouseEnter={(e: any) => e.currentTarget.querySelector('video')?.play()}
-                onMouseLeave={(e: any) => e.currentTarget.querySelector('video')?.pause()}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
-                {reel.isYoutube ? (
-                  <iframe src={`${reel.videoUrl}?autoplay=1&mute=1&loop=1&playlist=${reel.ytid}&controls=0&showinfo=0&rel=0&modestbranding=1`} className="absolute inset-0 w-[140%] h-[140%] -top-[20%] -left-[20%] object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none opacity-80" allow="autoplay; encrypted-media" frameBorder="0" tabIndex={-1} />
-                ) : (
-                  <video src={reel.videoUrl} muted loop playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none" />
-                )}
+                <LazyVideo src={reel.videoUrl} poster={reel.poster} isYoutube={reel.isYoutube} ytid={reel.ytid} isMobile={isMobile} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
                 <div className="absolute bottom-0 left-0 p-6 lg:p-5 xl:p-6 opacity-80 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 w-full pointer-events-none">
                   <h3 className="text-xl md:text-xl lg:text-lg xl:text-xl font-bold text-white drop-shadow-md leading-tight">{reel.title}</h3>
@@ -202,7 +256,7 @@ export default function Projects() {
                 key={idx} variants={cardVariant} onClick={() => setActiveVideo({ src: yt.videoUrl, title: yt.title })}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-video cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
-                <iframe src={`${yt.videoUrl}?autoplay=1&mute=1&loop=1&playlist=${yt.ytid}&controls=0&showinfo=0&rel=0&modestbranding=1`} className="absolute inset-0 w-[140%] h-[140%] -top-[20%] -left-[20%] object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] pointer-events-none opacity-80" allow="autoplay; encrypted-media" frameBorder="0" tabIndex={-1} />
+                <LazyVideo src={yt.videoUrl} isYoutube={true} ytid={yt.ytid} poster={yt.poster} isMobile={isMobile} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
                 <div className="absolute top-6 right-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 p-4 bg-black/40 border border-white/10 rounded-full backdrop-blur-md">
                    <Play className="text-white w-5 h-5 fill-white" />
@@ -223,7 +277,7 @@ export default function Projects() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent opacity-90 pointer-events-none" />
           
           <motion.h2 variants={staggerItem} className="text-4xl md:text-7xl font-bold text-white tracking-tight mb-6 drop-shadow-lg relative z-10 w-full">
-            Let’s Work Together
+            Let's Work Together
           </motion.h2>
 
           <motion.div variants={staggerItem} className="w-24 h-[2px] bg-white/20 rounded-full mb-16 relative z-10" />
