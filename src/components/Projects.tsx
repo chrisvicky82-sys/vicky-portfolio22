@@ -75,9 +75,9 @@ const LazyVideo = ({ src, poster, isYoutube = false, ytid = "", isDrive = false,
           
           {isYoutube ? (
             <iframe 
-              src={`${src}?autoplay=1&mute=1&loop=1&playlist=${ytid}&controls=0&showinfo=0&rel=0&modestbranding=1`} 
+              src={`${src}?autoplay=1&mute=1&loop=1&playlist=${ytid}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`} 
               className="absolute inset-0 w-[140%] h-[140%] -top-[20%] -left-[20%] object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03] opacity-80" 
-              allow="autoplay; encrypted-media" frameBorder="0" tabIndex={-1} loading="lazy" 
+              allow="autoplay; encrypted-media; playsinline" frameBorder="0" tabIndex={-1} 
             />
           ) : isDrive ? (
             <iframe
