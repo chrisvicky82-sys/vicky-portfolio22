@@ -20,7 +20,7 @@ const adCreatives: ProjectItem[] = [
   { videoUrl: "https://www.youtube.com/embed/krG9QQ9hydc", poster: "/reels/thumbnails/AdCreative2.jpg", title: "Ad Creative 2", isYoutube: true, ytid: "krG9QQ9hydc" },
   { videoUrl: "/reels/AdCreative3.mp4", poster: "/reels/thumbnails/AdCreative3.jpg", title: "Ad Creative 3" },
   { videoUrl: "/reels/AdCreative4.mp4", poster: "/reels/thumbnails/AdCreative4.jpg", title: "Ad Creative 4" },
-  { videoUrl: "/reels/AdCreative5.mp4", poster: "/reels/thumbnails/AdCreative5.jpg", title: "Ad Creative 5" }
+  { videoUrl: "https://www.youtube.com/embed/heVdsUsweTo", poster: "/reels/thumbnails/AdCreative5.jpg", title: "Ad Creative 5", isYoutube: true, ytid: "heVdsUsweTo" }
 ];
 
 const clientWork: ProjectItem[] = [
