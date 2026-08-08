@@ -50,9 +50,9 @@ export default function Overlay() {
       {/* Premiere Pro Icon (Left) */}
       <motion.div 
         style={{ opacity: iconOpacity, y: iconY }}
-        className="absolute left-6 md:left-20 lg:left-32 top-[45%] -translate-y-1/2 z-20 pointer-events-auto"
+        className="absolute left-4 md:left-20 lg:left-32 top-[58%] md:top-[45%] -translate-y-1/2 z-20 pointer-events-auto"
       >
-        <div className="w-18 h-18 md:w-26 md:h-26 bg-[#03001C] border border-[#9a9aff]/10 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_35px_rgba(154,154,255,0.18)] hover:border-[#9a9aff]/30 transition-all duration-300 cursor-pointer animate-wiggle-left">
+        <div className="w-18 h-18 md:w-26 md:h-26 bg-[#03001C] border border-[#9a9aff]/10 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_40px_rgba(154,154,255,0.4),0_0_15px_rgba(154,154,255,0.2)] hover:shadow-[0_0_50px_rgba(154,154,255,0.6),0_0_20px_rgba(154,154,255,0.3)] hover:border-[#9a9aff]/30 transition-all duration-300 cursor-pointer animate-wiggle-left">
           <span className="text-[#9a9aff] text-3xl md:text-5xl font-semibold tracking-tighter font-sans select-none">
             Pr
           </span>
@@ -62,9 +62,9 @@ export default function Overlay() {
       {/* After Effects Icon (Right) */}
       <motion.div 
         style={{ opacity: iconOpacity, y: iconY }}
-        className="absolute right-6 md:right-20 lg:right-32 top-[45%] -translate-y-1/2 z-20 pointer-events-auto"
+        className="absolute right-4 md:right-20 lg:right-32 top-[58%] md:top-[45%] -translate-y-1/2 z-20 pointer-events-auto"
       >
-        <div className="w-18 h-18 md:w-26 md:h-26 bg-[#03001C] border border-[#9a9aff]/10 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_35px_rgba(154,154,255,0.18)] hover:border-[#9a9aff]/30 transition-all duration-300 cursor-pointer animate-wiggle-right">
+        <div className="w-18 h-18 md:w-26 md:h-26 bg-[#03001C] border border-[#9a9aff]/10 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_40px_rgba(154,154,255,0.4),0_0_15px_rgba(154,154,255,0.2)] hover:shadow-[0_0_50px_rgba(154,154,255,0.6),0_0_20px_rgba(154,154,255,0.3)] hover:border-[#9a9aff]/30 transition-all duration-300 cursor-pointer animate-wiggle-right">
           <span className="text-[#9a9aff] text-3xl md:text-5xl font-semibold tracking-tighter font-sans select-none">
             Ae
           </span>
