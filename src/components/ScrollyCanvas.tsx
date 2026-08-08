@@ -192,7 +192,7 @@ export default function ScrollyCanvas() {
   return (
     <div ref={containerRef} className="h-[500vh] w-full relative bg-[#121212]">
       {/* Temporary Debug HUD */}
-      <div className="fixed top-4 left-4 z-[999] bg-black/80 text-green-400 p-4 rounded-xl font-mono text-xs border border-green-500/30 flex flex-col gap-1 pointer-events-none">
+      <div id="debug-hud" className="fixed top-4 left-4 z-[999] bg-black/80 text-green-400 p-4 rounded-xl font-mono text-xs border border-green-500/30 flex flex-col gap-1 pointer-events-none">
         <div>Progress: {(debugInfo.progress * 100).toFixed(1)}%</div>
         <div>Frame Index: {debugInfo.index} / 74</div>
         <div>Successful Loads (onload): {successCount} / 75</div>

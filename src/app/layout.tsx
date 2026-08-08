@@ -72,9 +72,12 @@ export default function RootLayout({
                   });
                 });
 
-                // Check image loads after page load
+                // Check image loads and HUD stats after page load
                 window.addEventListener('load', function() {
                   setTimeout(function() {
+                    var hud = document.getElementById('debug-hud');
+                    var hudText = hud ? hud.innerText : 'HUD NOT FOUND';
+                    
                     var images = document.querySelectorAll('img');
                     var results = [];
                     images.forEach(function(img) {
@@ -85,7 +88,7 @@ export default function RootLayout({
                         naturalHeight: img.naturalHeight
                       });
                     });
-                    sendLog('image_stats', results);
+                    sendLog('hud_and_images', { hud: hudText, images: results });
                   }, 3000);
                 });
               })();
