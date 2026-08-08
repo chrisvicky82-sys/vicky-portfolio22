@@ -16,21 +16,21 @@ export default function Overlay() {
   return (
     <div className="fixed top-0 left-0 w-full h-screen pointer-events-none z-10 flex flex-col justify-center items-center">
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes wiggleFloatLeft {
-          0% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-16px) rotate(3deg); }
-          100% { transform: translateY(0px) rotate(0deg); }
+        @keyframes floatZoomLeft {
+          0% { margin-top: 0px; transform: scale(1); }
+          50% { margin-top: -24px; transform: scale(1.08); }
+          100% { margin-top: 0px; transform: scale(1); }
         }
-        @keyframes wiggleFloatRight {
-          0% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(16px) rotate(-3deg); }
-          100% { transform: translateY(0px) rotate(0deg); }
+        @keyframes floatZoomRight {
+          0% { margin-top: 0px; transform: scale(1); }
+          50% { margin-top: 24px; transform: scale(1.08); }
+          100% { margin-top: 0px; transform: scale(1); }
         }
         .animate-wiggle-left {
-          animation: wiggleFloatLeft 5s ease-in-out infinite;
+          animation: floatZoomLeft 4s ease-in-out infinite;
         }
         .animate-wiggle-right {
-          animation: wiggleFloatRight 6s ease-in-out infinite;
+          animation: floatZoomRight 4.5s ease-in-out infinite;
         }
       `}} />
 
@@ -52,7 +52,7 @@ export default function Overlay() {
         style={{ opacity: iconOpacity, y: iconY }}
         className="absolute left-6 md:left-20 lg:left-32 top-[45%] -translate-y-1/2 z-20 pointer-events-auto"
       >
-        <div className="w-18 h-18 md:w-26 md:h-26 bg-[#03001C] border border-[#9a9aff]/10 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_35px_rgba(154,154,255,0.15)] hover:border-[#9a9aff]/30 transition-all duration-300 cursor-pointer animate-wiggle-left">
+        <div className="w-18 h-18 md:w-26 md:h-26 bg-[#03001C] border border-[#9a9aff]/10 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_35px_rgba(154,154,255,0.18)] hover:border-[#9a9aff]/30 transition-all duration-300 cursor-pointer animate-wiggle-left">
           <span className="text-[#9a9aff] text-3xl md:text-5xl font-semibold tracking-tighter font-sans select-none">
             Pr
           </span>
@@ -64,7 +64,7 @@ export default function Overlay() {
         style={{ opacity: iconOpacity, y: iconY }}
         className="absolute right-6 md:right-20 lg:right-32 top-[45%] -translate-y-1/2 z-20 pointer-events-auto"
       >
-        <div className="w-18 h-18 md:w-26 md:h-26 bg-[#03001C] border border-[#9a9aff]/10 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_35px_rgba(154,154,255,0.15)] hover:border-[#9a9aff]/30 transition-all duration-300 cursor-pointer animate-wiggle-right">
+        <div className="w-18 h-18 md:w-26 md:h-26 bg-[#03001C] border border-[#9a9aff]/10 rounded-[1.5rem] flex items-center justify-center shadow-[0_0_35px_rgba(154,154,255,0.18)] hover:border-[#9a9aff]/30 transition-all duration-300 cursor-pointer animate-wiggle-right">
           <span className="text-[#9a9aff] text-3xl md:text-5xl font-semibold tracking-tighter font-sans select-none">
             Ae
           </span>
