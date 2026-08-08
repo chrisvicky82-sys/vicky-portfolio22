@@ -25,7 +25,7 @@ export default function ScrollyCanvas() {
     for (let i = 0; i < FRAME_COUNT; i++) {
       const img = new Image();
       const indexStr = i.toString().padStart(2, '0');
-      
+
       img.onload = () => {
         localSuccess++;
         if (!firstLoaded && i === 0) {
@@ -48,7 +48,7 @@ export default function ScrollyCanvas() {
                 const canvasRatio = canvas.width / canvas.height;
                 const imgRatio = imgWidth / imgHeight;
                 let dw, dh, ox, oy;
-                
+
                 if (canvasRatio > imgRatio) {
                   dw = canvas.width;
                   dh = canvas.width / imgRatio;
@@ -89,14 +89,14 @@ export default function ScrollyCanvas() {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const totalHeight = rect.height - window.innerHeight;
-      
+
       let progress = 0;
       if (rect.top <= 0) {
         const scrolled = -rect.top;
         progress = scrolled / totalHeight;
         progress = Math.max(0, Math.min(1, progress));
       }
-      
+
       const index = Math.floor(progress * (FRAME_COUNT - 1));
       activeFrameRef.current = index;
       setFrameIndex(index);
@@ -112,7 +112,7 @@ export default function ScrollyCanvas() {
     // Initial size
     handleResize();
     handleScroll();
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize);
 
@@ -137,12 +137,12 @@ export default function ScrollyCanvas() {
     if (img && img.complete) {
       const imgWidth = img.naturalWidth || img.width || 1920;
       const imgHeight = img.naturalHeight || img.height || 1080;
-      
+
       if (imgWidth > 0) {
         const canvasRatio = canvas.width / canvas.height;
         const imgRatio = imgWidth / imgHeight;
         let dw, dh, ox, oy;
-        
+
         if (canvasRatio > imgRatio) {
           dw = canvas.width;
           dh = canvas.width / imgRatio;
@@ -167,11 +167,11 @@ export default function ScrollyCanvas() {
   return (
     <div ref={containerRef} className="h-[500vh] w-full relative bg-[#121212]">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <img 
-          src="/sequence/frame_00_delay-0.066s.jpg" 
+        <img
+          src="/sequence/frame_00_delay-0.066s.jpg"
           alt="Visual background"
           suppressHydrationWarning
-          className="absolute inset-0 w-full h-full object-cover z-0" 
+          className="absolute inset-0 w-full h-full object-cover z-0"
           style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
           // @ts-ignore
           fetchPriority="high"
