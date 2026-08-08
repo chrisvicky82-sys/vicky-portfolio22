@@ -197,6 +197,7 @@ export default function ScrollyCanvas() {
         <img 
           src="/sequence/frame_00_delay-0.066s.jpg" 
           alt="Visual background"
+          suppressHydrationWarning
           className="absolute inset-0 w-full h-full object-cover z-0" 
           style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
           // @ts-ignore
@@ -207,6 +208,7 @@ export default function ScrollyCanvas() {
           ref={canvasRef}
           width={dims.width}
           height={dims.height}
+          suppressHydrationWarning
           className="absolute inset-0 w-full h-full block z-10 pointer-events-none"
         />
       </div>

@@ -64,14 +64,18 @@ const LazyVideo = ({ src, poster, isYoutube = false, ytid = "", isDrive = false,
     }
   }, [isInView, isYoutube, isDrive]);
 
+  const resolvedPoster = isYoutube && ytid
+    ? `https://img.youtube.com/vi/${ytid}/hqdefault.jpg`
+    : poster;
+
   return (
     <div ref={ref} className="absolute inset-0 w-full h-full pointer-events-none bg-[#1e1e1e]">
       {!isInView ? (
-        poster && <img src={poster} alt="Thumbnail" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+        resolvedPoster && <img src={resolvedPoster} alt="Thumbnail" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
       ) : (
         <>
           {/* Always render poster behind video for instant preview */}
-          {poster && <img src={poster} alt="Thumbnail" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />}
+          {resolvedPoster && <img src={resolvedPoster} alt="Thumbnail" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />}
 
           {isYoutube ? (
             <iframe
@@ -89,7 +93,7 @@ const LazyVideo = ({ src, poster, isYoutube = false, ytid = "", isDrive = false,
             <video
               ref={videoRef}
               src={src}
-              poster={poster}
+              poster={resolvedPoster}
               autoPlay muted loop playsInline preload="metadata"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
             />
