@@ -14,6 +14,7 @@ export default function ScrollyCanvas() {
   // React-controlled dimensions to prevent layout resetting on re-render
   const [dims, setDims] = useState({ width: 1920, height: 1080 });
   const [frameIndex, setFrameIndex] = useState(0);
+  const activeFrameRef = useRef(0);
 
   // Preload images
   useEffect(() => {
@@ -33,6 +34,40 @@ export default function ScrollyCanvas() {
         }
         if (localSuccess >= 10) {
           setImagesLoaded(true);
+        }
+
+        // Draw immediately if this image finishes loading and is the active one!
+        if (i === activeFrameRef.current) {
+          const canvas = canvasRef.current;
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              const imgWidth = img.naturalWidth || img.width || 1920;
+              const imgHeight = img.naturalHeight || img.height || 1080;
+              if (imgWidth > 0) {
+                const canvasRatio = canvas.width / canvas.height;
+                const imgRatio = imgWidth / imgHeight;
+                let dw, dh, ox, oy;
+                
+                if (canvasRatio > imgRatio) {
+                  dw = canvas.width;
+                  dh = canvas.width / imgRatio;
+                  ox = 0;
+                  oy = (canvas.height - dh) / 2;
+                } else {
+                  dw = canvas.height * imgRatio;
+                  dh = canvas.height;
+                  ox = (canvas.width - dw) / 2;
+                  oy = 0;
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(img, ox, oy, dw, dh);
+              }
+            }
+          }
         }
       };
 
@@ -62,6 +97,7 @@ export default function ScrollyCanvas() {
       }
       
       const index = Math.floor(progress * (FRAME_COUNT - 1));
+      activeFrameRef.current = index;
       setFrameIndex(index);
     };
 
@@ -95,27 +131,27 @@ export default function ScrollyCanvas() {
     const imagesArray = imagesRef.current.length > 0 ? imagesRef.current : images;
     const img = imagesArray[frameIndex];
 
-    if (img) {
+    if (img && img.complete) {
       const imgWidth = img.naturalWidth || img.width || 1920;
       const imgHeight = img.naturalHeight || img.height || 1080;
       
-      const canvasRatio = canvas.width / canvas.height;
-      const imgRatio = imgWidth / imgHeight;
-      let dw, dh, ox, oy;
-      
-      if (canvasRatio > imgRatio) {
-        dw = canvas.width;
-        dh = canvas.width / imgRatio;
-        ox = 0;
-        oy = (canvas.height - dh) / 2;
-      } else {
-        dw = canvas.height * imgRatio;
-        dh = canvas.height;
-        ox = (canvas.width - dw) / 2;
-        oy = 0;
-      }
+      if (imgWidth > 0) {
+        const canvasRatio = canvas.width / canvas.height;
+        const imgRatio = imgWidth / imgHeight;
+        let dw, dh, ox, oy;
+        
+        if (canvasRatio > imgRatio) {
+          dw = canvas.width;
+          dh = canvas.width / imgRatio;
+          ox = 0;
+          oy = (canvas.height - dh) / 2;
+        } else {
+          dw = canvas.height * imgRatio;
+          dh = canvas.height;
+          ox = (canvas.width - dw) / 2;
+          oy = 0;
+        }
 
-      if (img.complete && imgWidth > 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
