@@ -165,7 +165,7 @@ export default function ScrollyCanvas() {
   }, [frameIndex, dims, imagesLoaded, images]);
 
   return (
-    <div ref={containerRef} className="h-[500vh] w-full relative bg-[#121212]">
+    <div ref={containerRef} className="h-[180vh] w-full relative bg-[#121212]">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <img
           src="/sequence/frame_00_delay-0.066s.jpg"
