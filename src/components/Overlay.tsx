@@ -17,20 +17,20 @@ export default function Overlay() {
     <div className="fixed top-0 left-0 w-full h-screen pointer-events-none z-10 flex flex-col justify-center items-center">
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes floatZoomLeft {
-          0% { margin-top: 0px; transform: scale(1); }
-          50% { margin-top: -24px; transform: scale(1.08); }
-          100% { margin-top: 0px; transform: scale(1); }
+          0% { margin-top: 0px; transform: scale(1) rotate(0deg); }
+          50% { margin-top: -45px; transform: scale(1.15) rotate(7deg); }
+          100% { margin-top: 0px; transform: scale(1) rotate(0deg); }
         }
         @keyframes floatZoomRight {
-          0% { margin-top: 0px; transform: scale(1); }
-          50% { margin-top: 24px; transform: scale(1.08); }
-          100% { margin-top: 0px; transform: scale(1); }
+          0% { margin-top: 0px; transform: scale(1) rotate(0deg); }
+          50% { margin-top: 45px; transform: scale(1.15) rotate(-7deg); }
+          100% { margin-top: 0px; transform: scale(1) rotate(0deg); }
         }
         .animate-wiggle-left {
-          animation: floatZoomLeft 4s ease-in-out infinite;
+          animation: floatZoomLeft 3.5s ease-in-out infinite;
         }
         .animate-wiggle-right {
-          animation: floatZoomRight 4.5s ease-in-out infinite;
+          animation: floatZoomRight 3.8s ease-in-out infinite;
         }
       `}} />
 
