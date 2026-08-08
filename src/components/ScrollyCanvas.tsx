@@ -20,6 +20,8 @@ export default function ScrollyCanvas() {
     imageComplete: false,
     imageSrc: '',
     imagesRefLen: 0,
+    naturalSize: '0x0',
+    drawCoords: 'w:0 h:0 x:0 y:0',
   });
 
   // Preload images
@@ -71,8 +73,10 @@ export default function ScrollyCanvas() {
     if (!ctx) return;
 
     const img = imagesArray[index];
+    const imgWidth = img.naturalWidth || img.width || 1920;
+    const imgHeight = img.naturalHeight || img.height || 1080;
     const canvasRatio = canvas.width / canvas.height;
-    const imgRatio = img.width / img.height;
+    const imgRatio = imgWidth / imgHeight;
 
     let drawWidth, drawHeight, offsetX, offsetY;
 
@@ -111,6 +115,32 @@ export default function ScrollyCanvas() {
     const imagesArray = imagesRef.current.length > 0 ? imagesRef.current : images;
     const img = imagesArray[index];
     
+    // Calculate layout coords for debug display
+    let coordsStr = 'w:0 h:0 x:0 y:0';
+    let natSizeStr = '0x0';
+    if (img && canvasRef.current) {
+      const imgWidth = img.naturalWidth || img.width || 1920;
+      const imgHeight = img.naturalHeight || img.height || 1080;
+      natSizeStr = `${imgWidth}x${imgHeight}`;
+      
+      const canvas = canvasRef.current;
+      const canvasRatio = canvas.width / canvas.height;
+      const imgRatio = imgWidth / imgHeight;
+      let dw, dh, ox, oy;
+      if (canvasRatio > imgRatio) {
+        dw = canvas.width;
+        dh = canvas.width / imgRatio;
+        ox = 0;
+        oy = (canvas.height - dh) / 2;
+      } else {
+        dw = canvas.height * imgRatio;
+        dh = canvas.height;
+        ox = (canvas.width - dw) / 2;
+        oy = 0;
+      }
+      coordsStr = `w:${dw.toFixed(0)} h:${dh.toFixed(0)} x:${ox.toFixed(0)} y:${oy.toFixed(0)}`;
+    }
+
     setDebugInfo({
       progress,
       index,
@@ -119,6 +149,8 @@ export default function ScrollyCanvas() {
       imageComplete: img ? img.complete : false,
       imageSrc: img ? img.src.substring(img.src.lastIndexOf('/')) : 'no-img',
       imagesRefLen: imagesArray.length,
+      naturalSize: natSizeStr,
+      drawCoords: coordsStr,
     });
 
     drawImage(index);
@@ -156,6 +188,8 @@ export default function ScrollyCanvas() {
         <div>Loaded Images: {debugInfo.loadedCount} / 75</div>
         <div>Images Array size: {debugInfo.imagesRefLen}</div>
         <div>Canvas Size: {debugInfo.canvasSize}</div>
+        <div>Natural Size: {debugInfo.naturalSize}</div>
+        <div>Draw Coords: {debugInfo.drawCoords}</div>
         <div>Active Frame Complete: {debugInfo.imageComplete ? 'YES' : 'NO'}</div>
         <div>Active Frame Src: {debugInfo.imageSrc}</div>
       </div>
