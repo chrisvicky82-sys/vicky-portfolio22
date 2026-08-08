@@ -22,23 +22,35 @@ export default function ScrollyCanvas() {
   useEffect(() => {
     let firstLoaded = false;
     const loadedImages: HTMLImageElement[] = new Array(FRAME_COUNT);
+    let loadedCount = 0;
 
     for (let i = 0; i < FRAME_COUNT; i++) {
       const img = new Image();
       const indexStr = i.toString().padStart(2, '0');
-      img.src = `/sequence/frame_${indexStr}_delay-0.066s.jpg`;
+      
+      // Crucial: Set onload BEFORE src to prevent missing the event for cached images
       img.onload = () => {
-        // Show sequence as soon as the first frame loads out of 75
+        loadedCount++;
+        
+        // Show sequence as soon as the first frame loads
         if (!firstLoaded && i === 0) {
           firstLoaded = true;
           setImagesLoaded(true);
         }
+
+        // Once we have loaded a decent chunk of images or all, unblock
+        if (loadedCount >= 10) {
+          setImagesLoaded(true);
+        }
+
         // If we are currently on this frame or waiting, trigger a redraw
         const latest = scrollYProgress.get();
         if (Math.floor(latest * (FRAME_COUNT - 1)) === i) {
           drawImage(i);
         }
       };
+
+      img.src = `/sequence/frame_${indexStr}_delay-0.066s.jpg`;
       loadedImages[i] = img;
     }
 
@@ -46,8 +58,9 @@ export default function ScrollyCanvas() {
     imagesRef.current = loadedImages;
     setImages(loadedImages);
 
-    // If the first frame takes long but another loads, we can also unblock
-    setTimeout(() => setImagesLoaded(true), 2000); // Fallback timeout to clear buffering text
+    // Fallback timeout to unblock if loading takes too long
+    const timeout = setTimeout(() => setImagesLoaded(true), 1500);
+    return () => clearTimeout(timeout);
   }, []);
 
   const lastDrawnIndex = useRef(-1);
@@ -81,22 +94,17 @@ export default function ScrollyCanvas() {
       offsetY = 0;
     }
 
-    // Schedule the draw on the next animation frame for buttery smooth scrolling
-    requestAnimationFrame(() => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Use good image smoothing for visual quality
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-    });
+    // Draw synchronously for real-time responsiveness matching scroll
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   };
 
   // Keep canvas size synced with window
   useEffect(() => {
     const handleResize = () => {
       if (!canvasRef.current) return;
-      // Multiplying by devicePixelRatio gives sharper images on retina but can hurt perf
-      // For cinematic effect at real-time, standard pixel bounds is generally fine, let's stick to 1x
       canvasRef.current.width = window.innerWidth;
       canvasRef.current.height = window.innerHeight;
 
@@ -127,21 +135,21 @@ export default function ScrollyCanvas() {
   return (
     <div ref={containerRef} className="h-[500vh] w-full relative bg-[#121212]">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <canvas
-          ref={canvasRef}
-          className="w-full h-full block"
+        {/* Placeholder background frame (always rendered to avoid flashes of blank screen) */}
+        <img 
+          src="/sequence/frame_00_delay-0.066s.jpg" 
+          alt="Visual background"
+          className="absolute inset-0 w-full h-full object-cover z-0" 
+          style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
+          // @ts-ignore
+          fetchpriority="high"
         />
 
-        {!imagesLoaded && (
-          <img 
-            src="/sequence/frame_00_delay-0.066s.jpg" 
-            alt="Placeholder"
-            className="absolute inset-0 w-full h-full object-cover z-0" 
-            style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
-            // @ts-ignore
-            fetchpriority="high"
-          />
-        )}
+        {/* Canvas overlays on top of the placeholder frame */}
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full block z-10 pointer-events-none"
+        />
       </div>
     </div>
   );
