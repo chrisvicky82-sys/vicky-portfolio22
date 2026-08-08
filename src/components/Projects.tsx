@@ -190,16 +190,19 @@ export default function Projects() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-8"
           >
             {clientWork.map((work, idx) => (
-              <motion.a
-                key={idx} href={work.targetUrl} target="_blank" rel="noopener noreferrer" variants={cardVariant}
+              <motion.div
+                key={idx} variants={cardVariant} onClick={() => setActiveVideo({ src: work.videoUrl, title: work.title })}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
                 <LazyVideo src={work.videoUrl} poster={work.poster} isYoutube={work.isYoutube} ytid={work.ytid} isMobile={isMobile} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
+                <div className="absolute top-6 right-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 p-4 bg-black/40 border border-white/10 rounded-full backdrop-blur-md">
+                  <Play className="text-white w-5 h-5 fill-white" />
+                </div>
                 <div className="absolute bottom-0 left-0 p-6 lg:p-5 xl:p-6 opacity-80 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 w-full pointer-events-none">
                   <h3 className="text-xl md:text-xl lg:text-lg xl:text-xl font-bold text-white drop-shadow-md leading-tight">{work.title}</h3>
                 </div>
-              </motion.a>
+              </motion.div>
             ))}
           </motion.div>
         </div>
@@ -221,16 +224,19 @@ export default function Projects() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8"
           >
             {podcastReels.map((reel, idx) => (
-              <motion.a
-                key={idx} href={reel.targetUrl} target="_blank" rel="noopener noreferrer" variants={cardVariant}
+              <motion.div
+                key={idx} variants={cardVariant} onClick={() => setActiveVideo({ src: reel.videoUrl, title: reel.title })}
                 className="group relative rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 shadow-xl aspect-[9/16] block cursor-pointer transition-all duration-[350ms] ease-out hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-white/30"
               >
                 <LazyVideo src={reel.videoUrl} poster={reel.poster} isYoutube={reel.isYoutube} ytid={reel.ytid} isMobile={isMobile} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#121212]/90 via-[#121212]/40 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-[350ms] ease-out pointer-events-none" />
+                <div className="absolute top-6 right-6 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 p-4 bg-black/40 border border-white/10 rounded-full backdrop-blur-md">
+                  <Play className="text-white w-5 h-5 fill-white" />
+                </div>
                 <div className="absolute bottom-0 left-0 p-6 lg:p-5 xl:p-6 opacity-80 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-[350ms] ease-out z-10 w-full pointer-events-none">
                   <h3 className="text-xl md:text-xl lg:text-lg xl:text-xl font-bold text-white drop-shadow-md leading-tight">{reel.title}</h3>
                 </div>
-              </motion.a>
+              </motion.div>
             ))}
           </motion.div>
         </div>
