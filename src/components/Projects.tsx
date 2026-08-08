@@ -64,8 +64,8 @@ const LazyVideo = ({ src, poster, isYoutube = false, ytid = "", isDrive = false,
     }
   }, [isInView, isYoutube, isDrive]);
 
-  const resolvedPoster = isYoutube && ytid
-    ? `https://img.youtube.com/vi/${ytid}/hqdefault.jpg`
+  const resolvedPoster = (isYoutube || isDrive)
+    ? undefined
     : poster;
 
   return (
