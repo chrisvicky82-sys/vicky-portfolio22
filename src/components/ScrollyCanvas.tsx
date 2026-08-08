@@ -1,6 +1,5 @@
 'use client';
 
-import { useScroll, useMotionValueEvent } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
 const FRAME_COUNT = 75;
@@ -10,12 +9,6 @@ export default function ScrollyCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
-
   const imagesRef = useRef<HTMLImageElement[]>([]);
 
   // Preload images
@@ -43,18 +36,14 @@ export default function ScrollyCanvas() {
           setImagesLoaded(true);
         }
 
-        // If we are currently on this frame or waiting, trigger a redraw
-        const latest = scrollYProgress.get();
-        if (Math.floor(latest * (FRAME_COUNT - 1)) === i) {
-          drawImage(i);
-        }
+        // Redraw if this is the active frame
+        triggerRedraw();
       };
 
       img.src = `/sequence/frame_${indexStr}_delay-0.066s.jpg`;
       loadedImages[i] = img;
     }
 
-    // Set ref instead of state so we don't cause React re-renders on every load
     imagesRef.current = loadedImages;
     setImages(loadedImages);
 
@@ -101,36 +90,50 @@ export default function ScrollyCanvas() {
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   };
 
-  // Keep canvas size synced with window
+  // Helper to trigger redraw based on current scroll position
+  const triggerRedraw = () => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const totalHeight = rect.height - window.innerHeight;
+    
+    // If container is not visible yet or we haven't scrolled into it
+    if (rect.top > 0) {
+      drawImage(0);
+      return;
+    }
+
+    const scrolled = -rect.top;
+    let progress = scrolled / totalHeight;
+    progress = Math.max(0, Math.min(1, progress));
+    
+    const index = Math.floor(progress * (FRAME_COUNT - 1));
+    drawImage(index);
+  };
+
+  // Scroll listener using vanilla JS for rock-solid reliability
   useEffect(() => {
+    const handleScroll = () => {
+      triggerRedraw();
+    };
+
     const handleResize = () => {
       if (!canvasRef.current) return;
       canvasRef.current.width = window.innerWidth;
       canvasRef.current.height = window.innerHeight;
-
-      const latest = scrollYProgress.get();
-      drawImage(Math.floor(latest * (FRAME_COUNT - 1)));
+      triggerRedraw();
     };
 
+    // Initial setup and draw
     handleResize();
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [imagesLoaded, scrollYProgress]);
 
-  // Initial draw
-  useEffect(() => {
-    if (imagesLoaded) {
-      const latest = scrollYProgress.get();
-      drawImage(Math.floor(latest * (FRAME_COUNT - 1)));
-    }
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, [imagesLoaded]);
-
-  // Scrub animation on scroll
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (!imagesLoaded) return;
-    const index = Math.floor(latest * (FRAME_COUNT - 1));
-    drawImage(index);
-  });
 
   return (
     <div ref={containerRef} className="h-[500vh] w-full relative bg-[#121212]">
@@ -140,6 +143,7 @@ export default function ScrollyCanvas() {
           src="/sequence/frame_00_delay-0.066s.jpg" 
           alt="Visual background"
           className="absolute inset-0 w-full h-full object-cover z-0" 
+          style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
           // @ts-ignore
           fetchPriority="high"
         />
