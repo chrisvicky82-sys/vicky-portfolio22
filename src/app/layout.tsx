@@ -28,6 +28,72 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var originalError = console.error;
+                var originalWarn = console.warn;
+                
+                function sendLog(type, data) {
+                  try {
+                    fetch('/api/log', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ type: type, url: window.location.href, data: data })
+                    }).catch(function() {});
+                  } catch (e) {}
+                }
+
+                console.error = function() {
+                  originalError.apply(console, arguments);
+                  sendLog('console.error', Array.prototype.slice.call(arguments).map(String));
+                };
+
+                console.warn = function() {
+                  originalWarn.apply(console, arguments);
+                  sendLog('console.warn', Array.prototype.slice.call(arguments).map(String));
+                };
+
+                window.onerror = function(message, source, lineno, colno, error) {
+                  sendLog('window.onerror', {
+                    message: message,
+                    source: source,
+                    lineno: lineno,
+                    colno: colno,
+                    error: error ? error.stack : null
+                  });
+                };
+
+                window.addEventListener('unhandledrejection', function(event) {
+                  sendLog('unhandledrejection', {
+                    reason: event.reason ? (event.reason.stack || String(event.reason)) : null
+                  });
+                });
+
+                // Check image loads after page load
+                window.addEventListener('load', function() {
+                  setTimeout(function() {
+                    var images = document.querySelectorAll('img');
+                    var results = [];
+                    images.forEach(function(img) {
+                      results.push({
+                        src: img.src,
+                        complete: img.complete,
+                        naturalWidth: img.naturalWidth,
+                        naturalHeight: img.naturalHeight
+                      });
+                    });
+                    sendLog('image_stats', results);
+                  }, 3000);
+                });
+              })();
+            `
+          }}
+        />
+      </head>
+
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
