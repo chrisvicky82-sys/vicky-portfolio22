@@ -11,11 +11,14 @@ export default function ScrollyCanvas() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const imagesRef = useRef<HTMLImageElement[]>([]);
 
+  // Debug counters
+  const [successCount, setSuccessCount] = useState(0);
+  const [failureCount, setFailureCount] = useState(0);
+
   // Debug state
   const [debugInfo, setDebugInfo] = useState({
     progress: 0,
     index: 0,
-    loadedCount: 0,
     canvasSize: '0x0',
     imageComplete: false,
     imageSrc: '',
@@ -28,24 +31,33 @@ export default function ScrollyCanvas() {
   useEffect(() => {
     let firstLoaded = false;
     const loadedImages: HTMLImageElement[] = new Array(FRAME_COUNT);
-    let loadedCount = 0;
+    
+    let localSuccess = 0;
+    let localFailure = 0;
 
     for (let i = 0; i < FRAME_COUNT; i++) {
       const img = new Image();
       const indexStr = i.toString().padStart(2, '0');
       
       img.onload = () => {
-        loadedCount++;
+        localSuccess++;
+        setSuccessCount(localSuccess);
         
         if (!firstLoaded && i === 0) {
           firstLoaded = true;
           setImagesLoaded(true);
         }
 
-        if (loadedCount >= 10) {
+        if (localSuccess >= 10) {
           setImagesLoaded(true);
         }
 
+        triggerRedraw();
+      };
+
+      img.onerror = (e) => {
+        localFailure++;
+        setFailureCount(localFailure);
         triggerRedraw();
       };
 
@@ -115,7 +127,6 @@ export default function ScrollyCanvas() {
     const imagesArray = imagesRef.current.length > 0 ? imagesRef.current : images;
     const img = imagesArray[index];
     
-    // Calculate layout coords for debug display
     let coordsStr = 'w:0 h:0 x:0 y:0';
     let natSizeStr = '0x0';
     if (img && canvasRef.current) {
@@ -144,7 +155,6 @@ export default function ScrollyCanvas() {
     setDebugInfo({
       progress,
       index,
-      loadedCount: imagesArray.filter(imgItem => imgItem && imgItem.complete).length,
       canvasSize: canvasRef.current ? `${canvasRef.current.width}x${canvasRef.current.height}` : 'no-canvas',
       imageComplete: img ? img.complete : false,
       imageSrc: img ? img.src.substring(img.src.lastIndexOf('/')) : 'no-img',
@@ -185,7 +195,8 @@ export default function ScrollyCanvas() {
       <div className="fixed top-4 left-4 z-[999] bg-black/80 text-green-400 p-4 rounded-xl font-mono text-xs border border-green-500/30 flex flex-col gap-1 pointer-events-none">
         <div>Progress: {(debugInfo.progress * 100).toFixed(1)}%</div>
         <div>Frame Index: {debugInfo.index} / 74</div>
-        <div>Loaded Images: {debugInfo.loadedCount} / 75</div>
+        <div>Successful Loads (onload): {successCount} / 75</div>
+        <div>Failed Loads (onerror): {failureCount} / 75</div>
         <div>Images Array size: {debugInfo.imagesRefLen}</div>
         <div>Canvas Size: {debugInfo.canvasSize}</div>
         <div>Natural Size: {debugInfo.naturalSize}</div>
