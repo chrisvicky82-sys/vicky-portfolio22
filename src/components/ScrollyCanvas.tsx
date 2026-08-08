@@ -11,6 +11,17 @@ export default function ScrollyCanvas() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const imagesRef = useRef<HTMLImageElement[]>([]);
 
+  // Debug state
+  const [debugInfo, setDebugInfo] = useState({
+    progress: 0,
+    index: 0,
+    loadedCount: 0,
+    canvasSize: '0x0',
+    imageComplete: false,
+    imageSrc: '',
+    imagesRefLen: 0,
+  });
+
   // Preload images
   useEffect(() => {
     let firstLoaded = false;
@@ -21,22 +32,18 @@ export default function ScrollyCanvas() {
       const img = new Image();
       const indexStr = i.toString().padStart(2, '0');
       
-      // Crucial: Set onload BEFORE src to prevent missing the event for cached images
       img.onload = () => {
         loadedCount++;
         
-        // Show sequence as soon as the first frame loads
         if (!firstLoaded && i === 0) {
           firstLoaded = true;
           setImagesLoaded(true);
         }
 
-        // Once we have loaded a decent chunk of images or all, unblock
         if (loadedCount >= 10) {
           setImagesLoaded(true);
         }
 
-        // Redraw if this is the active frame
         triggerRedraw();
       };
 
@@ -47,7 +54,6 @@ export default function ScrollyCanvas() {
     imagesRef.current = loadedImages;
     setImages(loadedImages);
 
-    // Fallback timeout to unblock if loading takes too long
     const timeout = setTimeout(() => setImagesLoaded(true), 1500);
     return () => clearTimeout(timeout);
   }, []);
@@ -55,7 +61,7 @@ export default function ScrollyCanvas() {
   const lastDrawnIndex = useRef(-1);
 
   const drawImage = (index: number) => {
-    if (lastDrawnIndex.current === index) return; // Prevent redrawing the exact same frame repeatedly
+    if (lastDrawnIndex.current === index) return;
     const imagesArray = imagesRef.current.length > 0 ? imagesRef.current : images;
     if (!canvasRef.current || !imagesArray[index] || !imagesArray[index].complete) return;
 
@@ -64,7 +70,6 @@ export default function ScrollyCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Object-fit: cover logic
     const img = imagesArray[index];
     const canvasRatio = canvas.width / canvas.height;
     const imgRatio = img.width / img.height;
@@ -83,34 +88,42 @@ export default function ScrollyCanvas() {
       offsetY = 0;
     }
 
-    // Draw synchronously for real-time responsiveness matching scroll
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   };
 
-  // Helper to trigger redraw based on current scroll position
   const triggerRedraw = () => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const totalHeight = rect.height - window.innerHeight;
     
-    // If container is not visible yet or we haven't scrolled into it
-    if (rect.top > 0) {
-      drawImage(0);
-      return;
+    let progress = 0;
+    if (rect.top <= 0) {
+      const scrolled = -rect.top;
+      progress = scrolled / totalHeight;
+      progress = Math.max(0, Math.min(1, progress));
     }
-
-    const scrolled = -rect.top;
-    let progress = scrolled / totalHeight;
-    progress = Math.max(0, Math.min(1, progress));
     
     const index = Math.floor(progress * (FRAME_COUNT - 1));
+    
+    const imagesArray = imagesRef.current.length > 0 ? imagesRef.current : images;
+    const img = imagesArray[index];
+    
+    setDebugInfo({
+      progress,
+      index,
+      loadedCount: imagesArray.filter(imgItem => imgItem && imgItem.complete).length,
+      canvasSize: canvasRef.current ? `${canvasRef.current.width}x${canvasRef.current.height}` : 'no-canvas',
+      imageComplete: img ? img.complete : false,
+      imageSrc: img ? img.src.substring(img.src.lastIndexOf('/')) : 'no-img',
+      imagesRefLen: imagesArray.length,
+    });
+
     drawImage(index);
   };
 
-  // Scroll listener using vanilla JS for rock-solid reliability
   useEffect(() => {
     const handleScroll = () => {
       triggerRedraw();
@@ -123,7 +136,6 @@ export default function ScrollyCanvas() {
       triggerRedraw();
     };
 
-    // Initial setup and draw
     handleResize();
     
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -137,8 +149,18 @@ export default function ScrollyCanvas() {
 
   return (
     <div ref={containerRef} className="h-[500vh] w-full relative bg-[#121212]">
+      {/* Temporary Debug HUD */}
+      <div className="fixed top-4 left-4 z-[999] bg-black/80 text-green-400 p-4 rounded-xl font-mono text-xs border border-green-500/30 flex flex-col gap-1 pointer-events-none">
+        <div>Progress: {(debugInfo.progress * 100).toFixed(1)}%</div>
+        <div>Frame Index: {debugInfo.index} / 74</div>
+        <div>Loaded Images: {debugInfo.loadedCount} / 75</div>
+        <div>Images Array size: {debugInfo.imagesRefLen}</div>
+        <div>Canvas Size: {debugInfo.canvasSize}</div>
+        <div>Active Frame Complete: {debugInfo.imageComplete ? 'YES' : 'NO'}</div>
+        <div>Active Frame Src: {debugInfo.imageSrc}</div>
+      </div>
+
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Placeholder background frame (always rendered to avoid flashes of blank screen) */}
         <img 
           src="/sequence/frame_00_delay-0.066s.jpg" 
           alt="Visual background"
@@ -148,7 +170,6 @@ export default function ScrollyCanvas() {
           fetchPriority="high"
         />
 
-        {/* Canvas overlays on top of the placeholder frame */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full block z-10 pointer-events-none"
