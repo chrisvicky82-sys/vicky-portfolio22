@@ -15,29 +15,11 @@ export default function ScrollyCanvas() {
   const [dims, setDims] = useState({ width: 1920, height: 1080 });
   const [frameIndex, setFrameIndex] = useState(0);
 
-  // Debug counters
-  const [successCount, setSuccessCount] = useState(0);
-  const [failureCount, setFailureCount] = useState(0);
-
-  // Debug state
-  const [debugInfo, setDebugInfo] = useState({
-    progress: 0,
-    index: 0,
-    canvasSize: '0x0',
-    imageComplete: false,
-    imageSrc: '',
-    imagesRefLen: 0,
-    naturalSize: '0x0',
-    drawCoords: 'w:0 h:0 x:0 y:0',
-  });
-
   // Preload images
   useEffect(() => {
     let firstLoaded = false;
     const loadedImages: HTMLImageElement[] = new Array(FRAME_COUNT);
-    
     let localSuccess = 0;
-    let localFailure = 0;
 
     for (let i = 0; i < FRAME_COUNT; i++) {
       const img = new Image();
@@ -45,21 +27,13 @@ export default function ScrollyCanvas() {
       
       img.onload = () => {
         localSuccess++;
-        setSuccessCount(localSuccess);
-        
         if (!firstLoaded && i === 0) {
           firstLoaded = true;
           setImagesLoaded(true);
         }
-
         if (localSuccess >= 10) {
           setImagesLoaded(true);
         }
-      };
-
-      img.onerror = () => {
-        localFailure++;
-        setFailureCount(localFailure);
       };
 
       img.src = `/sequence/frame_${indexStr}_delay-0.066s.jpg`;
@@ -120,14 +94,10 @@ export default function ScrollyCanvas() {
 
     const imagesArray = imagesRef.current.length > 0 ? imagesRef.current : images;
     const img = imagesArray[frameIndex];
-    
-    let coordsStr = 'w:0 h:0 x:0 y:0';
-    let natSizeStr = '0x0';
 
     if (img) {
       const imgWidth = img.naturalWidth || img.width || 1920;
       const imgHeight = img.naturalHeight || img.height || 1080;
-      natSizeStr = `${imgWidth}x${imgHeight}`;
       
       const canvasRatio = canvas.width / canvas.height;
       const imgRatio = imgWidth / imgHeight;
@@ -144,8 +114,6 @@ export default function ScrollyCanvas() {
         ox = (canvas.width - dw) / 2;
         oy = 0;
       }
-      
-      coordsStr = `w:${dw.toFixed(0)} h:${dh.toFixed(0)} x:${ox.toFixed(0)} y:${oy.toFixed(0)}`;
 
       if (img.complete && imgWidth > 0) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -154,45 +122,10 @@ export default function ScrollyCanvas() {
         ctx.drawImage(img, ox, oy, dw, dh);
       }
     }
-
-    // Update HUD info
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const totalHeight = rect.height - window.innerHeight;
-      let progress = 0;
-      if (rect.top <= 0) {
-        progress = Math.max(0, Math.min(1, -rect.top / totalHeight));
-      }
-
-      setDebugInfo({
-        progress,
-        index: frameIndex,
-        canvasSize: `${canvas.width}x${canvas.height}`,
-        imageComplete: img ? img.complete : false,
-        imageSrc: img ? img.src.substring(img.src.lastIndexOf('/')) : 'no-img',
-        imagesRefLen: imagesArray.length,
-        naturalSize: natSizeStr,
-        drawCoords: coordsStr,
-      });
-    }
   }, [frameIndex, dims, imagesLoaded, images]);
 
   return (
     <div ref={containerRef} className="h-[500vh] w-full relative bg-[#121212]">
-      {/* Temporary Debug HUD */}
-      <div id="debug-hud" suppressHydrationWarning className="fixed top-4 left-4 z-[999] bg-black/80 text-green-400 p-4 rounded-xl font-mono text-xs border border-green-500/30 flex flex-col gap-1 pointer-events-none">
-        <div>Progress: {(debugInfo.progress * 100).toFixed(1)}%</div>
-        <div>Frame Index: {debugInfo.index} / 74</div>
-        <div>Successful Loads (onload): {successCount} / 75</div>
-        <div>Failed Loads (onerror): {failureCount} / 75</div>
-        <div>Images Array size: {debugInfo.imagesRefLen}</div>
-        <div>Canvas Size: {debugInfo.canvasSize}</div>
-        <div>Natural Size: {debugInfo.naturalSize}</div>
-        <div>Draw Coords: {debugInfo.drawCoords}</div>
-        <div>Active Frame Complete: {debugInfo.imageComplete ? 'YES' : 'NO'}</div>
-        <div>Active Frame Src: {debugInfo.imageSrc}</div>
-      </div>
-
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <img 
           src="/sequence/frame_00_delay-0.066s.jpg" 
