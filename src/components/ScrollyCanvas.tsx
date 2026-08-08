@@ -65,6 +65,7 @@ export default function ScrollyCanvas() {
                 ctx.imageSmoothingEnabled = true;
                 ctx.imageSmoothingQuality = 'high';
                 ctx.drawImage(img, ox, oy, dw, dh);
+                console.log("[ScrollyCanvas] Frame drawn on load:", i, "src:", img.src);
               }
             }
           }
@@ -131,6 +132,8 @@ export default function ScrollyCanvas() {
     const imagesArray = imagesRef.current.length > 0 ? imagesRef.current : images;
     const img = imagesArray[frameIndex];
 
+    console.log("[ScrollyCanvas] Draw attempt: index =", frameIndex, "img exists =", !!img, "complete =", img ? img.complete : false);
+
     if (img && img.complete) {
       const imgWidth = img.naturalWidth || img.width || 1920;
       const imgHeight = img.naturalHeight || img.height || 1080;
@@ -156,6 +159,7 @@ export default function ScrollyCanvas() {
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, ox, oy, dw, dh);
+        console.log("[ScrollyCanvas] Frame drawn on scroll:", frameIndex);
       }
     }
   }, [frameIndex, dims, imagesLoaded, images]);
