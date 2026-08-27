@@ -37,7 +37,7 @@ const podcastReels: ProjectItem[] = [
   { targetUrl: "https://www.instagram.com/reel/DUvK1QQkncV/", videoUrl: "/reels/DUvK1QQkncV.mp4", poster: "/reels/thumbnails/DUvK1QQkncV.jpg", title: "Podcast Reel 2" },
   { targetUrl: "https://youtube.com/shorts/5IDNjfzogoM", videoUrl: "https://www.youtube.com/embed/5IDNjfzogoM", poster: "/reels/thumbnails/5IDNjfzogoM.jpg", title: "Podcast Reel 3", isYoutube: true, ytid: "5IDNjfzogoM" },
   { targetUrl: "https://www.instagram.com/reel/DWWKSi5AZtr/", videoUrl: "/reels/DWWKSi5AZtr.mp4", poster: "/reels/thumbnails/DWWKSi5AZtr.jpg", title: "Podcast Reel 4" },
-  { targetUrl: "https://www.instagram.com/reel/DJ4B0gHJIJX/", videoUrl: "/reels/DJ4B0gHJIJX.mp4", poster: "/reels/thumbnails/DJ4B0gHJIJX.jpg", title: "Podcast Reel 5" }
+  { targetUrl: "https://www.instagram.com/reel/Db-wLOjvz0S/", videoUrl: "/reels/Db-wLOjvz0S.mp4", poster: "/reels/thumbnails/Db-wLOjvz0S.jpg", title: "Podcast Reel 5" }
 ];
 
 const youtubeEdits: ProjectItem[] = [
