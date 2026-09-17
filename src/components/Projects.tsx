@@ -17,7 +17,7 @@ interface ProjectItem {
 
 const adCreatives: ProjectItem[] = [
   { videoUrl: "/reels/AdCreative1.mp4", poster: "/reels/thumbnails/AdCreative1.jpg", title: "Ad Creative 1" },
-  { videoUrl: "https://www.youtube.com/embed/krG9QQ9hydc", poster: "/reels/thumbnails/AdCreative2.jpg", title: "Ad Creative 2", isYoutube: true, ytid: "krG9QQ9hydc" },
+  { videoUrl: "/reels/AdCreative2.mp4", poster: "/reels/thumbnails/AdCreative2.jpg", title: "Ad Creative 2" },
   { videoUrl: "/reels/AdCreative3.mp4", poster: "/reels/thumbnails/AdCreative3.jpg", title: "Ad Creative 3" },
   { videoUrl: "/reels/AdCreative4.mp4", poster: "/reels/thumbnails/AdCreative4.jpg", title: "Ad Creative 4" },
   { videoUrl: "https://www.youtube.com/embed/heVdsUsweTo", poster: "/reels/thumbnails/AdCreative5.jpg", title: "Ad Creative 5", isYoutube: true, ytid: "heVdsUsweTo" }
@@ -287,7 +287,7 @@ export default function Projects() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-transparent to-transparent opacity-90 pointer-events-none" />
           
           <motion.h2 variants={staggerItem} className="text-4xl md:text-7xl font-bold text-white tracking-tight mb-6 drop-shadow-lg relative z-10 w-full">
-            Let's Work Together
+            Let’s Work Together
           </motion.h2>
 
           <motion.div variants={staggerItem} className="w-24 h-[2px] bg-white/20 rounded-full mb-16 relative z-10" />

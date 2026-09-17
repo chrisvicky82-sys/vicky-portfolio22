@@ -173,7 +173,6 @@ export default function ScrollyCanvas() {
           suppressHydrationWarning
           className="absolute inset-0 w-full h-full object-cover z-0"
           style={{ width: '100vw', height: '100vh', objectFit: 'cover' }}
-          // @ts-ignore
           fetchPriority="high"
         />
 
