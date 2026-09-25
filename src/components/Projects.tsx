@@ -20,7 +20,8 @@ const adCreatives: ProjectItem[] = [
   { videoUrl: "/reels/AdCreative2.mp4", poster: "/reels/thumbnails/AdCreative2.jpg", title: "Ad Creative 2" },
   { videoUrl: "/reels/AdCreative3.mp4", poster: "/reels/thumbnails/AdCreative3.jpg", title: "Ad Creative 3" },
   { videoUrl: "/reels/AdCreative4.mp4", poster: "/reels/thumbnails/AdCreative4.jpg", title: "Ad Creative 4" },
-  { videoUrl: "https://www.youtube.com/embed/heVdsUsweTo", poster: "/reels/thumbnails/AdCreative5.jpg", title: "Ad Creative 5", isYoutube: true, ytid: "heVdsUsweTo" }
+  { videoUrl: "https://www.youtube.com/embed/heVdsUsweTo", poster: "/reels/thumbnails/AdCreative5.jpg", title: "Ad Creative 5", isYoutube: true, ytid: "heVdsUsweTo" },
+  { videoUrl: "https://www.youtube.com/embed/29f5f7rdlIE", poster: "/reels/thumbnails/AdCreative6.jpg", title: "Ad Creative 6", isYoutube: true, ytid: "29f5f7rdlIE", targetUrl: "https://youtube.com/shorts/29f5f7rdlIE" }
 ];
 
 const clientWork: ProjectItem[] = [
@@ -157,7 +158,7 @@ export default function Projects() {
 
           <motion.div
             initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }} variants={staggerContainer}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 lg:gap-8"
           >
             {adCreatives.map((ad, idx) => (
               <motion.div
