@@ -33,7 +33,7 @@ const clientWork: ProjectItem[] = [
 ];
 
 const podcastReels: ProjectItem[] = [
-  { targetUrl: "https://www.instagram.com/reel/DOGW5qpgfDI/", videoUrl: "/reels/DOGW5qpgfDI.mp4", poster: "/reels/thumbnails/DOGW5qpgfDI.jpg", title: "Podcast Reel 1" },
+  { targetUrl: "https://youtube.com/shorts/2hfWCmPFn3Y", videoUrl: "https://www.youtube.com/embed/2hfWCmPFn3Y", poster: "/reels/thumbnails/2hfWCmPFn3Y.jpg", title: "Podcast Reel 1", isYoutube: true, ytid: "2hfWCmPFn3Y" },
   { targetUrl: "https://www.instagram.com/reel/DUvK1QQkncV/", videoUrl: "/reels/DUvK1QQkncV.mp4", poster: "/reels/thumbnails/DUvK1QQkncV.jpg", title: "Podcast Reel 2" },
   { targetUrl: "https://youtube.com/shorts/5IDNjfzogoM", videoUrl: "https://www.youtube.com/embed/5IDNjfzogoM", poster: "/reels/thumbnails/5IDNjfzogoM.jpg", title: "Podcast Reel 3", isYoutube: true, ytid: "5IDNjfzogoM" },
   { targetUrl: "https://www.instagram.com/reel/DWWKSi5AZtr/", videoUrl: "/reels/DWWKSi5AZtr.mp4", poster: "/reels/thumbnails/DWWKSi5AZtr.jpg", title: "Podcast Reel 4" },
