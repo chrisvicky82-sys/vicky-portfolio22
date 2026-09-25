@@ -25,7 +25,7 @@ const adCreatives: ProjectItem[] = [
 ];
 
 const clientWork: ProjectItem[] = [
-  { targetUrl: "https://www.instagram.com/reel/DRjvgCoD4S6/", videoUrl: "/reels/ClientProject1.mp4", poster: "/reels/thumbnails/ClientProject1.jpg", title: "Client Project 1" },
+  { targetUrl: "https://youtube.com/shorts/WpEUxsWEaUE", videoUrl: "https://www.youtube.com/embed/WpEUxsWEaUE", poster: "/reels/thumbnails/WpEUxsWEaUE.jpg", title: "Client Project 1", isYoutube: true, ytid: "WpEUxsWEaUE" },
   { targetUrl: "https://www.instagram.com/reel/DQwMiAVEiMR/", videoUrl: "/reels/ClientProject2.mp4", poster: "/reels/thumbnails/ClientProject2.jpg", title: "Client Project 2" },
   { targetUrl: "https://www.instagram.com/reel/DITm6V6ipev/", videoUrl: "/reels/ClientProject3.mp4", poster: "/reels/thumbnails/ClientProject3.jpg", title: "Client Project 3" },
   { targetUrl: "https://www.instagram.com/reel/DSKi_cbEtbK/", videoUrl: "/reels/ClientProject4.mp4", poster: "/reels/thumbnails/ClientProject4.jpg", title: "Client Project 4" },
